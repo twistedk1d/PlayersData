@@ -1,5 +1,12 @@
 [
   {
+    "type": "log",
+    "action": "Вход",
+    "user": "PavelDIPF",
+    "details": "ID: 4913628074",
+    "ts": 1774277771
+  },
+  {
     "fullTime": "23.03.2026 16:49:47",
     "type": "log",
     "action": "Выход",
