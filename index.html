@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Casual Style | LOGS</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg: #ffffff;
@@ -26,13 +27,15 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            transition: 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container { max-width: 800px; margin: auto; }
 
         .header { 
-            text-align: center; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px; 
         }
 
@@ -41,6 +44,20 @@
             font-size: 22px; 
             letter-spacing: 1px;
             text-transform: uppercase;
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .nav-bar { 
@@ -115,6 +132,7 @@
             font-weight: 800;
             margin-right: 8px;
             color: #fff;
+            text-transform: uppercase;
         }
 
         .player-row {
@@ -124,19 +142,27 @@
             display: flex;
             align-items: center;
             font-weight: 600;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            background: var(--card);
         }
         .player-row:hover { background: var(--accent); color: #fff; }
 
     </style>
 </head>
-<body class="dark"> <div class="container">
+<body>
+<div class="container">
     <div class="header">
         <h1>ЛОГИ <span id="clock" style="opacity:0.5; font-size:14px; font-weight:normal;"></span></h1>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i id="theme-icon" data-lucide="monitor"></i>
+            <span id="theme-text">Auto</span>
+        </button>
     </div>
 
     <div class="nav-bar">
         <button onclick="setTab('all')" id="btn-all" class="tab-btn active">EVENTS</button>
-        <button onclick="setTab('report')" id="id-report" class="tab-btn">REPORTS</button>
+        <button onclick="setTab('report')" id="btn-report" class="tab-btn">REPORTS</button>
         <button onclick="setTab('players')" id="btn-players" class="tab-btn">PLAYERS</button>
     </div>
 
@@ -151,30 +177,55 @@
 const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
 let logs = [];
 let currentTab = 'all';
+let themeMode = localStorage.getItem('themeMode') || 'auto';
 
-function applyTheme() {
+function updateTheme() {
     const hour = new Date().getHours();
-    if (hour >= 20 || hour < 8) {
+    const isDarkTime = hour >= 20 || hour < 8;
+    const icon = document.getElementById('theme-icon');
+    const text = document.getElementById('theme-text');
+
+    if (themeMode === 'auto') {
+        if (isDarkTime) document.body.classList.add('dark');
+        else document.body.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'monitor');
+        text.innerText = 'Auto';
+    } else if (themeMode === 'dark') {
         document.body.classList.add('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        text.innerText = 'Dark';
     } else {
         document.body.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        text.innerText = 'Light';
     }
+    lucide.createIcons();
+}
+
+function toggleTheme() {
+    if (themeMode === 'auto') themeMode = 'light';
+    else if (themeMode === 'light') themeMode = 'dark';
+    else themeMode = 'auto';
+    
+    localStorage.setItem('themeMode', themeMode);
+    updateTheme();
 }
 
 async function load() {
     try {
         const r = await fetch(DATA_URL + '?v=' + Date.now());
-        logs = await r.json();
+        const rawData = await r.json();
+        logs = Array.isArray(rawData) ? rawData : [];
         render();
-    } catch(e) { console.error("Ошибка загрузки:", e); }
+    } catch(e) { 
+        console.error("Ошибка загрузки:", e); 
+    }
 }
 
 function setTab(t) {
     currentTab = t;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    if(t === 'all') document.getElementById('btn-all').classList.add('active');
-    if(t === 'report') document.getElementById('id-report').classList.add('active');
-    if(t === 'players') document.getElementById('btn-players').classList.add('active');
+    document.getElementById('btn-' + t).classList.add('active');
     render();
 }
 
@@ -204,10 +255,11 @@ function render() {
     }
 
     const filtered = logs.filter(l => {
-        const isReport = l.type === 'REPORT';
-        const nameMatch = (l.user || '').toLowerCase().includes(searchTerm) || (l.sender || '').toLowerCase().includes(searchTerm);
+        const typeStr = (l.type || '').toUpperCase();
+        const nameMatch = (l.user || '').toLowerCase().includes(searchTerm) || 
+                          (l.sender || '').toLowerCase().includes(searchTerm);
         
-        if (currentTab === 'report') return isReport && nameMatch;
+        if (currentTab === 'report') return typeStr === 'REPORT' && nameMatch;
         return nameMatch;
     });
 
@@ -217,14 +269,14 @@ function render() {
         
         const date = l.ts ? new Date(l.ts * 1000).toLocaleString() : '---';
         const color = l.color || '#2ecc71';
-        const type = l.type || 'LOG';
+        const type = (l.type || 'LOG').toUpperCase();
 
         let bodyHtml = '';
         if(type === 'REPORT') {
-            bodyHtml = `<span class="user-name">${l.sender}</span> подал жалобу на <span class="report-user">${l.user}</span><br>
+            bodyHtml = `<span class="user-name">${l.sender || 'Unknown'}</span> подал жалобу на <span class="report-user">${l.user || 'Unknown'}</span><br>
                         <span style="opacity:0.8">Причина: ${l.reason || 'не указана'}</span>`;
         } else {
-            bodyHtml = `<span class="user-name">${l.user}</span> — ${l.action || 'Действие'} <span style="opacity:0.6">${l.details || ''}</span>`;
+            bodyHtml = `<span class="user-name">${l.user || l.sender || 'System'}</span> — ${l.action || 'Действие'} <span style="opacity:0.6">${l.details || ''}</span>`;
         }
 
         div.innerHTML = `
@@ -241,10 +293,9 @@ setInterval(() => {
     document.getElementById('clock').innerText = new Date().toLocaleTimeString();
 }, 1000);
 
-applyTheme();
+updateTheme();
 load();
 setInterval(load, 15000);
 </script>
-
 </body>
 </html>
