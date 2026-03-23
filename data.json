@@ -1,5 +1,13 @@
 [
   {
+    "type": "UNMUTE",
+    "action": "Снял мут",
+    "user": "PavelDIPF",
+    "color": "#00ffcc",
+    "ts": 1774282170,
+    "sender": "PavelDIPF"
+  },
+  {
     "type": "MUTE",
     "ts": 1774282159,
     "user": "PavelDIPF",
