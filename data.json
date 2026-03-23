@@ -1,5 +1,13 @@
 [
   {
+    "type": "EXIT",
+    "action": "Выход",
+    "user": "PavelDIPF",
+    "color": "#ffff44",
+    "ts": 1774282184,
+    "details": "Сессия: 113с"
+  },
+  {
     "type": "REPORT",
     "count": 3,
     "user": "asd",
