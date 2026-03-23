@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casual Style | Log System</title>
+    <title>Casual Style | LOGS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(23, 28, 38, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
-        .log-card { transition: transform 0.2s; }
-        .log-card:hover { transform: translateY(-2px); background: rgba(30, 41, 59, 0.5); }
+    <style id="theme-style">
+        body { transition: background-color 0.3s, color 0.3s; font-family: 'Inter', sans-serif; }
+        .glass { backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); transition: background 0.3s; }
+        .log-card { transition: transform 0.2s, background 0.2s; }
+        .log-card:hover { transform: translateY(-1px); }
+        
+        .theme-night { background-color: #1a1c23; color: #e2e8f0; }
+        .theme-night .glass { background: rgba(30, 41, 59, 0.7); border-color: rgba(255,255,255,0.05); }
+        .theme-night .tab-active { border-bottom: 2px solid #22c55e; color: #22c55e; }
+        .theme-night .btn-primary { background-color: #22c55e; color: white; }
+        .theme-night .input-field { background-color: #111827; border-color: #374151; color: white; }
+
+        .theme-day { background-color: #f8fafc; color: #1e293b; }
+        .theme-day .glass { background: rgba(255, 255, 255, 0.8); border-color: rgba(0,0,0,0.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .theme-day .tab-active { border-bottom: 2px solid #16a34a; color: #16a34a; }
+        .theme-day .btn-primary { background-color: #16a34a; color: white; }
+        .theme-day .input-field { background-color: #ffffff; border-color: #d1d5db; color: #1e293b; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -18,83 +29,107 @@
     <div class="max-w-6xl mx-auto">
         <header class="mb-8 flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight">DIPF LOGS <span class="text-blue-500 text-sm font-mono uppercase">Console</span></h1>
-                <p class="text-gray-500 text-sm">Система мониторинга игровых событий</p>
+                <h1 class="text-2xl font-bold tracking-tight">Casual Style <span class="text-green-500 font-mono">[LOGS]</span></h1>
+                <p id="time-status" class="text-gray-500 text-sm italic"></p>
             </div>
-            <div id="status" class="flex items-center gap-2 text-xs text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
-                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                GitHub Sync: Online
+            <div id="status" class="flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                Live Data Connected
             </div>
         </header>
 
         <div class="glass rounded-xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between">
             <nav class="flex gap-6">
-                <button onclick="switchTab('logs')" id="btn-logs" class="tab-active pb-1 text-sm font-medium transition-all">Последние логи</button>
-                <button onclick="switchTab('reports')" id="btn-reports" class="pb-1 text-sm font-medium text-gray-400 hover:text-white transition-all">Репорты</button>
+                <button onclick="switchTab('logs')" id="btn-logs" class="tab-active pb-1 text-sm font-bold transition-all">Последние логи</button>
+                <button onclick="switchTab('reports')" id="btn-reports" class="pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all">Репорты</button>
             </nav>
             
-            <div class="relative w-full md:w-72">
-                <input type="text" id="searchInput" placeholder="Поиск по нику (напр. PavelDIPF)" 
-                       class="w-full bg-[#111827] border border-gray-700 rounded-lg py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all">
-                <button onclick="handleSearch()" class="absolute right-2 top-1.5 bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-xs font-bold transition-colors">
+            <div class="relative w-full md:w-80">
+                <input type="text" id="searchInput" placeholder="Поиск ника (напр. PavelDIPF)" 
+                       class="input-field w-full border rounded-lg py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                <button onclick="handleSearch()" class="btn-primary absolute right-1.5 top-1.5 px-4 py-1 rounded text-xs font-black uppercase tracking-wider transition-all hover:opacity-90">
                     ИСКАТЬ
                 </button>
             </div>
         </div>
 
-        <div id="content-area" class="space-y-3">
+        <div id="content-area" class="space-y-2">
+            <div class="text-center py-10 text-gray-400">Загрузка данных из GitHub...</div>
         </div>
     </div>
 
     <script>
+        const JSON_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
         let currentTab = 'logs';
+        let allData = [];
 
-        const mockLogs = [
-            { id: 1, type: 'log', user: 'PavelDIPF', action: 'Join Server', time: '15:42:10', details: 'IP: 127.0.0.1 | Region: UA' },
-            { id: 2, type: 'report', target: 'Player123', sender: 'AnyaDIPF', reason: 'Spam', time: '15:40:05' },
-            { id: 3, type: 'log', user: 'Guest_55', action: 'Purchase', time: '15:38:20', details: 'Item: SpeedCoil | Price: 500 Lyfes' }
-        ];
+        function updateTheme() {
+            const hour = new Date().getHours();
+            const isNight = hour >= 20 || hour < 8;
+            const body = document.body;
+            const timeStatus = document.getElementById('time-status');
+
+            if (isNight) {
+                body.className = 'p-4 md:p-8 theme-night';
+                timeStatus.innerText = 'Ночной режим мониторинга';
+            } else {
+                body.className = 'p-4 md:p-8 theme-day';
+                timeStatus.innerText = 'Дневной режим мониторинга';
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch(JSON_URL);
+                allData = await response.json();
+                renderData();
+            } catch (error) {
+                document.getElementById('content-area').innerHTML = `<div class="text-center py-20 text-red-500 font-bold">Ошибка загрузки data.json: ${error.message}</div>`;
+            }
+        }
 
         function renderData(filter = '') {
             const container = document.getElementById('content-area');
             container.innerHTML = '';
 
-            const filtered = mockLogs.filter(item => {
+            const filtered = allData.filter(item => {
                 const matchesTab = currentTab === 'logs' ? item.type === 'log' : item.type === 'report';
                 const searchLower = filter.toLowerCase();
-                const matchesSearch = item.user?.toLowerCase().includes(searchLower) || 
-                                    item.target?.toLowerCase().includes(searchLower) ||
-                                    item.sender?.toLowerCase().includes(searchLower);
+                const matchesSearch = 
+                    (item.user && item.user.toLowerCase().includes(searchLower)) || 
+                    (item.target && item.target.toLowerCase().includes(searchLower)) ||
+                    (item.sender && item.sender.toLowerCase().includes(searchLower));
+                
                 return matchesTab && (filter === '' || matchesSearch);
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-20 text-gray-600">Ничего не найдено</div>`;
+                container.innerHTML = `<div class="text-center py-20 text-gray-500">Записей не найдено</div>`;
                 return;
             }
 
             filtered.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'glass p-4 rounded-lg log-card flex items-center justify-between border-l-4 ' + 
-                                (item.type === 'report' ? 'border-l-red-500' : 'border-l-blue-500');
+                div.className = 'glass p-3 px-5 rounded-lg log-card flex items-center justify-between border-l-4 ' + 
+                                (item.type === 'report' ? 'border-l-orange-500' : 'border-l-green-500');
                 
                 if (item.type === 'log') {
                     div.innerHTML = `
-                        <div>
-                            <span class="text-blue-400 font-mono text-xs">[${item.time}]</span>
-                            <span class="font-bold ml-2">${item.user}</span>
-                            <span class="text-gray-400 ml-2">→ ${item.action}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-green-500 font-mono text-xs font-bold">[${item.time}]</span>
+                            <span class="font-black text-sm uppercase tracking-wide">${item.user}</span>
+                            <span class="text-gray-400 text-sm tracking-tight">→ ${item.action}</span>
                         </div>
-                        <div class="text-xs text-gray-500 italic">${item.details}</div>
+                        <div class="text-[10px] opacity-60 font-mono">${item.details || ''}</div>
                     `;
                 } else {
                     div.innerHTML = `
-                        <div>
-                            <span class="text-red-400 font-mono text-xs">[${item.time}]</span>
-                            <span class="text-gray-300 ml-2">Отправитель:</span> <span class="font-bold">${item.sender}</span>
-                            <span class="text-gray-300 ml-2">На кого:</span> <span class="font-bold text-red-400">${item.target}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-orange-500 font-mono text-xs font-bold">[${item.time}]</span>
+                            <span class="text-xs opacity-70">SENDER:</span> <span class="font-bold text-sm">${item.sender}</span>
+                            <span class="text-xs opacity-70">TARGET:</span> <span class="font-bold text-sm text-orange-500">${item.target}</span>
                         </div>
-                        <div class="text-xs bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-300">Причина: ${item.reason}</div>
+                        <div class="text-xs font-medium px-3 py-1 rounded bg-orange-500/10 text-orange-600 border border-orange-500/20">REASON: ${item.reason}</div>
                     `;
                 }
                 container.appendChild(div);
@@ -103,17 +138,20 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            document.getElementById('btn-logs').className = tab === 'logs' ? 'tab-active pb-1 text-sm font-medium transition-all' : 'pb-1 text-sm font-medium text-gray-400 hover:text-white transition-all';
-            document.getElementById('btn-reports').className = tab === 'reports' ? 'tab-active pb-1 text-sm font-medium transition-all' : 'pb-1 text-sm font-medium text-gray-400 hover:text-white transition-all';
-            renderData();
+            document.getElementById('btn-logs').className = tab === 'logs' ? 'tab-active pb-1 text-sm font-bold transition-all' : 'pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all';
+            document.getElementById('btn-reports').className = tab === 'reports' ? 'tab-active pb-1 text-sm font-bold transition-all' : 'pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all';
+            renderData(document.getElementById('searchInput').value);
         }
 
         function handleSearch() {
-            const val = document.getElementById('searchInput').value;
-            renderData(val);
+            renderData(document.getElementById('searchInput').value);
         }
 
-        window.onload = () => renderData();
+        window.onload = () => {
+            updateTheme();
+            fetchData();
+            setInterval(fetchData, 30000); 
+        };
     </script>
 </body>
 </html>
