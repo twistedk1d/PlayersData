@@ -1,6 +1,14 @@
 [
   {
     "type": "report",
+    "time": "16:31:30",
+    "target": "TENSEY_0",
+    "count": 6,
+    "sender": "PavelDIPF",
+    "reason": "СЫН ШАЛАВЫ"
+  },
+  {
+    "type": "report",
     "time": "16:31:13",
     "target": "TENSEY_0",
     "count": 5,
