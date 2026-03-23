@@ -1,205 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>TERMINAL // CASUAL STYLE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casual Style | LOGS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-dim: #8b949e;
+            --accent-green: #2ecc71;
+            --accent-red: #ff4d4d;
+            --accent-blue: #3498db;
+            --border-color: #30363d;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
         body {
-            background: #0a0a0a;
-            color: #d1d1d1;
-            font-family: 'Consolas', 'Monaco', monospace;
-            margin: 0;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #222;
-            padding-bottom: 20px;
-        }
-
-        .header h1 {
-            color: #00ff41;
-            font-size: 20px;
-            letter-spacing: 4px;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        .clock {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .nav {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 40px 20px;
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .nav-item {
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            color: #444;
-            transition: 0.2s;
-            text-transform: uppercase;
-        }
-
-        .nav-item:hover { color: #888; }
-        .nav-item.active { color: #00ff41; text-decoration: underline; }
-
-        .search-box {
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-            display: flex;
+            flex-direction: column;
             align-items: center;
+            transition: background 0.3s ease;
         }
-
-        .search-box span { color: #00ff41; margin-right: 10px; }
-
-        input {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid #333;
-            color: #00ff41;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
+        .container {
             width: 100%;
+            max-width: 900px;
         }
-
-        #terminal {
-            max-width: 1100px;
-            margin: 0 auto;
-            line-height: 1.5;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
-
-        .log-line {
-            white-space: pre-wrap;
-            margin-bottom: 5px;
-            font-size: 13px;
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
-
-        .ts { color: #555; margin-right: 10px; }
-        .type { font-weight: bold; margin-right: 10px; }
-        .user { color: #fff; }
-        .details { color: #888; }
-        
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #222; }
+        .header h1 span {
+            color: var(--accent-green);
+        }
+        .nav-bar {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .nav-btn.active {
+            background: var(--accent-green);
+            color: #fff;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+        }
+        .search-btn {
+            background: var(--accent-green);
+            border: none;
+            padding: 0 25px;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .log-item {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-left-width: 4px;
+        }
+        .log-item.report {
+            border-left-color: var(--accent-red);
+        }
+        .log-content b {
+            color: #fff;
+        }
+        .log-type {
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .log-time {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        .player-item {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .player-item:hover {
+            border-color: var(--accent-green);
+        }
+        .error-msg {
+            color: var(--accent-red);
+            text-align: center;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>CASUAL <span>STYLE</span></h1>
+            <div id="time-display" style="font-size: 12px; color: var(--text-dim);"></div>
+        </div>
 
-    <div class="header">
-        <h1>SECURE LOGS // CASUAL STYLE</h1>
-        <div class="clock" id="clock">SYSTEM READY</div>
-    </div>
+        <div class="nav-bar">
+            <button class="nav-btn active" onclick="setTab('all')">События</button>
+            <button class="nav-btn" onclick="setTab('reports')">Жалобы</button>
+            <button class="nav-btn" onclick="setTab('players')">Игроки</button>
+        </div>
 
-    <div class="nav">
-        <div onclick="setTab('all')" id="tab-all" class="nav-item active">ALL EVENTS</div>
-        <div onclick="setTab('report')" id="tab-report" class="nav-item">REPORTS</div>
-        <div id="tab-user" class="nav-item" style="display:none">TARGET</div>
-    </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Поиск ника...">
+            <button class="search-btn" onclick="render()">ПОИСК</button>
+        </div>
 
-    <div class="search-box">
-        <span>root@casual-style:~$</span>
-        <input type="text" id="search" placeholder="search_user..." onkeydown="if(event.key==='Enter') searchPlayer()">
-    </div>
-
-    <div id="terminal">
-        <div class="log-line">Initializing secure connection...</div>
+        <div id="logs-container"></div>
     </div>
 
     <script>
-        const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
-        let logs = [];
-        let tab = 'all';
-        let query = '';
+        let rawData = [];
+        let currentTab = 'all';
+        const dataUrl = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/main/data.json';
 
-        async function load() {
+        async function fetchData() {
             try {
-                const r = await fetch(`${DATA_URL}?v=${Date.now()}`);
-                logs = await r.json();
+                const response = await fetch(dataUrl + '?t=' + Date.now());
+                const text = await response.text();
+                try {
+                    rawData = JSON.parse(text);
+                } catch (e) {
+                    const cleaned = text.substring(0, text.lastIndexOf(']') + 1);
+                    rawData = JSON.parse(cleaned);
+                }
+                if (!Array.isArray(rawData)) rawData = [];
                 render();
-            } catch (e) {
-                document.getElementById('terminal').innerHTML = '<div style="color:red">CONNECTION ERROR</div>';
+            } catch (err) {
+                document.getElementById('logs-container').innerHTML = `<div class="error-msg">Ошибка загрузки данных: ${err.message}</div>`;
             }
         }
 
-        function setTab(t) {
-            tab = t;
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + (t === 'user' ? 'user' : t)).classList.add('active');
-            if(t !== 'user') {
-                document.getElementById('tab-user').style.display = 'none';
-                query = '';
-            }
+        function setTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase().includes(tab === 'all' ? 'события' : tab === 'reports' ? 'жалобы' : 'игроки'));
+            });
             render();
         }
 
-        function searchPlayer() {
-            const v = document.getElementById('search').value.toLowerCase().trim();
-            if(!v) return setTab('all');
-            query = v;
-            document.getElementById('tab-user').innerText = 'TARGET: ' + v.toUpperCase();
-            document.getElementById('tab-user').style.display = 'block';
-            setTab('user');
-        }
-
         function render() {
-            const container = document.getElementById('terminal');
+            const container = document.getElementById('logs-container');
+            const query = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
 
-            const filtered = logs.filter(i => {
-                if(!i) return false;
-                if(tab === 'report') return i.type === 'REPORT';
-                if(tab === 'user') {
-                    const u = (i.user || i.target || '').toLowerCase();
-                    const s = (i.sender || '').toLowerCase();
-                    return u.includes(query) || s.includes(query);
-                }
-                return true;
+            const filtered = rawData.filter(item => {
+                if (!item) return false;
+                const matchSearch = JSON.stringify(item).toLowerCase().includes(query);
+                if (currentTab === 'reports') return item.type === 'REPORT' && matchSearch;
+                if (currentTab === 'players') return false;
+                return matchSearch;
             });
 
-            if(filtered.length === 0) {
-                container.innerHTML = '<div class="log-line">NO RECORDS FOUND</div>';
+            if (currentTab === 'players') {
+                const players = [...new Set(rawData.filter(i => i && i.player).map(i => i.player))];
+                players.forEach(player => {
+                    const div = document.createElement('div');
+                    div.className = 'player-item';
+                    div.innerText = player;
+                    div.onclick = () => { document.getElementById('searchInput').value = player; setTab('all'); };
+                    container.appendChild(div);
+                });
                 return;
             }
 
-            filtered.forEach(i => {
+            filtered.reverse().forEach(log => {
                 const div = document.createElement('div');
-                div.className = 'log-line';
+                div.className = `log-item ${log.type === 'REPORT' ? 'report' : ''}`;
                 
-                const time = i.ts ? new Date(i.ts * 1000).toLocaleString('ru-RU') : '??:??:??';
-                const color = i.color || '#00ff41';
-                const type = (i.type || 'LOG').toUpperCase();
-
-                let html = `<span class="ts">[${time}]</span>`;
-                html += `<span class="type" style="color:${color}">[${type}]</span>`;
+                const time = log.time || new Date().toLocaleString();
+                const typeLabel = log.type === 'REPORT' ? '<span class="log-type" style="color:var(--accent-red)">REPORT</span>' : '<span class="log-type" style="color:var(--accent-blue)">LOG</span>';
                 
-                if(type === 'REPORT') {
-                    html += `<span class="user">${i.sender}</span> reported <span style="color:#ff4444">${i.user || i.target}</span> :: <span class="details">"${i.reason}"</span>`;
-                } else {
-                    html += `<span class="user">${i.user}</span> :: <span class="details">${i.action || ''} ${i.details || ''}</span>`;
-                }
+                let content = `<b>${log.player}</b> ${log.action || ''}`;
+                if (log.target) content += ` → <b style="color:var(--accent-red)">${log.target}</b>`;
+                if (log.reason) content += `<br><small style="color:var(--text-dim)">Причина: ${log.reason}</small>`;
 
-                div.innerHTML = html;
+                div.innerHTML = `
+                    <div class="log-content">
+                        ${typeLabel} ${content}
+                    </div>
+                    <div class="log-time">${time}</div>
+                `;
                 container.appendChild(div);
             });
+
+            if (container.innerHTML === '') container.innerHTML = '<div style="text-align:center;color:var(--text-dim)">НЕТ ДАННЫХ</div>';
         }
 
         setInterval(() => {
-            document.getElementById('clock').innerText = 'SYS_TIME: ' + new Date().toLocaleTimeString();
+            const now = new Date();
+            document.getElementById('time-display').innerText = now.toLocaleString();
+            const hours = now.getHours();
+            document.body.style.filter = (hours >= 20 || hours <= 6) ? 'brightness(0.9)' : 'none';
         }, 1000);
 
-        setInterval(load, 30000);
-        window.onload = load;
+        fetchData();
+        setInterval(fetchData, 30000);
     </script>
 </body>
 </html>
