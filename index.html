@@ -2,176 +2,115 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casual Style | LOGS</title>
+    <title>Casual Style | PANEL</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            transition: all 0.4s ease; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-        .glass { 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .log-card { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .log-card:hover { 
-            transform: scale(1.01) translateX(4px); 
-        }
-        
-        .theme-night { background: #0f1115; color: #f1f5f9; }
-        .theme-night .glass { background: rgba(22, 24, 30, 0.8); }
-        .theme-night .card-bg { background: rgba(30, 35, 45, 0.4); }
-        .theme-night .tab-active { color: #4ade80; border-bottom: 2px solid #4ade80; }
-        .theme-night .input-field { background: #1a1d24; border: 1px solid #2d333f; color: white; }
-
-        .theme-day { background: #f0f4f8; color: #334155; }
-        .theme-day .glass { background: rgba(255, 255, 255, 0.7); border-color: rgba(0,0,0,0.05); }
-        .theme-day .card-bg { background: rgba(255, 255, 255, 0.5); }
-        .theme-day .tab-active { color: #16a34a; border-bottom: 2px solid #16a34a; }
-        .theme-day .input-field { background: white; border: 1px solid #e2e8f0; color: #334155; }
+        body { font-family: 'Inter', sans-serif; background: #0f1115; color: #e2e8f0; transition: 0.3s; }
+        .ui-card { background: rgba(22, 27, 34, 0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+        .tab-btn { padding: 8px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; transition: 0.2s; opacity: 0.5; }
+        .tab-btn.active { opacity: 1; background: #22c55e; color: white; }
+        .log-row { border-left: 4px solid #3b82f6; }
+        .log-report { border-left-color: #ef4444; }
+        .log-universal { border-left-color: #a855f7; }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-5xl mx-auto">
-        <header class="mb-10 flex flex-wrap justify-between items-end gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold tracking-tight mb-1">Casual Style <span class="text-green-500 opacity-80 uppercase text-xl font-mono">[Logs]</span></h1>
-                <p id="time-status" class="opacity-50 text-xs font-medium uppercase tracking-widest"></p>
-            </div>
-            <div class="flex items-center gap-3 px-4 py-2 rounded-2xl glass text-[11px] font-bold uppercase tracking-wider">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                Live Sync Active
-            </div>
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-extrabold uppercase tracking-widest">Casual <span class="text-green-500">Style</span></h1>
+            <div id="clock" class="text-xs font-mono opacity-50"></div>
         </header>
 
-        <div class="glass rounded-3xl p-2 mb-8 flex flex-wrap gap-2 items-center justify-between shadow-xl shadow-black/5">
-            <nav class="flex p-2 gap-2">
-                <button onclick="switchTab('logs')" id="btn-logs" class="px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active">События</button>
-                <button onclick="switchTab('reports')" id="btn-reports" class="px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300">Жалобы</button>
-            </nav>
-            
-            <div class="relative w-full md:w-auto md:min-w-[350px] p-1">
-                <input type="text" id="searchInput" placeholder="Поиск по никнейму..." 
-                       class="input-field w-full rounded-2xl py-3 px-5 text-sm focus:outline-none focus:ring-4 focus:ring-green-500/10 transition-all">
-                <button onclick="handleSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white px-5 py-1.5 rounded-xl text-[10px] font-black tracking-tighter uppercase transition-all shadow-lg shadow-green-500/20">
-                    Найти
-                </button>
+        <div class="ui-card rounded-2xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex gap-2" id="tabs">
+                <button onclick="setTab('all')" class="tab-btn active" id="tab-all">События</button>
+                <button onclick="setTab('report')" class="tab-btn" id="tab-report">Жалобы</button>
+                <button onclick="setTab('user')" class="tab-btn hidden" id="tab-user">История игрока</button>
+            </div>
+            <div class="relative w-full md:w-72">
+                <input type="text" id="search" placeholder="Ник игрока..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-green-500 transition-all">
+                <button onclick="searchPlayer()" class="absolute right-2 top-1.5 bg-green-500 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold">ПОИСК</button>
             </div>
         </div>
 
-        <div id="content-area" class="grid gap-3">
-            <div class="text-center py-20 opacity-40 animate-pulse">Синхронизация с базой данных...</div>
-        </div>
+        <div id="logs-container" class="space-y-3"></div>
     </div>
 
     <script>
-        const JSON_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
-        let currentTab = 'logs';
+        const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
         let allData = [];
+        let currentTab = 'all';
+        let currentUser = '';
 
-        function updateTheme() {
-            const hour = new Date().getHours();
-            const isNight = hour >= 20 || hour < 8;
-            const body = document.body;
-            const timeStatus = document.getElementById('time-status');
-            body.className = isNight ? 'p-4 md:p-10 theme-night' : 'p-4 md:p-10 theme-day';
-            timeStatus.innerText = isNight ? '🌙 Night Monitoring Mode' : '☀️ Day Monitoring Mode';
-        }
-
-        async function fetchData() {
-            try {
-                const response = await fetch(`${JSON_URL}?nocache=${Date.now()}`);
-                const text = await response.text();
-                try {
-                    allData = JSON.parse(text);
-                    if (!Array.isArray(allData)) allData = [];
-                } catch (e) {
-                    allData = [];
-                }
-                renderData();
-            } catch (error) {
-                document.getElementById('content-area').innerHTML = `<div class="text-center py-20 text-red-400 font-bold">Ошибка соединения</div>`;
+        function setTab(t) {
+            currentTab = t;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + (t === 'user' ? 'user' : t)).classList.add('active');
+            if (t !== 'user') {
+                document.getElementById('tab-user').classList.add('hidden');
+                currentUser = '';
             }
+            render();
         }
 
-        function renderData(filter = '') {
-            const container = document.getElementById('content-area');
+        async function load() {
+            try {
+                const r = await fetch(`${DATA_URL}?v=${Date.now()}`);
+                allData = await r.json();
+                render();
+            } catch (e) { console.error("Load error"); }
+        }
+
+        function searchPlayer() {
+            const val = document.getElementById('search').value.toLowerCase();
+            if (!val) return;
+            currentUser = val;
+            document.getElementById('tab-user').innerText = `Игрок: ${val}`;
+            document.getElementById('tab-user').classList.remove('hidden');
+            setTab('user');
+        }
+
+        function render() {
+            const container = document.getElementById('logs-container');
             container.innerHTML = '';
-            const searchLower = filter.toLowerCase();
 
             const filtered = allData.filter(item => {
-                const matchesTab = currentTab === 'logs' ? item.type === 'log' : item.type === 'report';
-                const matchesSearch = !filter || 
-                    (item.user && item.user.toLowerCase().includes(searchLower)) || 
-                    (item.target && item.target.toLowerCase().includes(searchLower)) ||
-                    (item.sender && item.sender.toLowerCase().includes(searchLower));
-                return matchesTab && matchesSearch;
+                if (currentTab === 'report') return item.type === 'report';
+                if (currentTab === 'user') {
+                    const u = (item.user || '').toLowerCase();
+                    const s = (item.sender || '').toLowerCase();
+                    const t = (item.target || '').toLowerCase();
+                    return u.includes(currentUser) || s.includes(currentUser) || t.includes(currentUser);
+                }
+                return true; 
             });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-32 opacity-30 font-bold italic tracking-widest">ДАННЫЕ ОТСУТСТВУЮТ</div>`;
-                return;
-            }
 
             filtered.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'glass p-4 px-6 rounded-2xl log-card card-bg flex flex-wrap items-center justify-between gap-4 border-l-[6px] ' + 
-                                (item.type === 'report' ? 'border-orange-500' : 'border-green-500');
+                div.className = `ui-card p-4 rounded-xl flex justify-between items-center log-row ${item.type === 'report' ? 'log-report' : (item.type !== 'log' ? 'log-universal' : '')}`;
                 
-                if (item.type === 'log') {
-                    div.innerHTML = `
-                        <div class="flex items-center gap-5">
-                            <span class="opacity-30 font-mono text-[10px] font-bold tracking-tighter">${item.time}</span>
-                            <span class="font-extrabold text-sm tracking-tight">${item.user}</span>
-                            <span class="opacity-60 text-xs px-3 py-1 rounded-lg bg-black/5">${item.action}</span>
-                        </div>
-                        <div class="text-[10px] font-bold opacity-40 font-mono italic uppercase">${item.details || ''}</div>
-                    `;
+                let content = '';
+                if (item.type === 'report') {
+                    content = `<div><span class="text-red-400 font-bold">REPORT</span> <span class="mx-2 opacity-30">|</span> <b>${item.sender}</b> → <b class="text-red-400">${item.user}</b></div>
+                               <div class="text-xs bg-red-500/10 px-3 py-1 rounded-lg border border-red-500/20">${item.reason}</div>`;
                 } else {
-                    div.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <span class="text-orange-500 font-mono text-[10px] font-bold">${item.time}</span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] opacity-40 font-black uppercase">From</span>
-                                <span class="font-bold text-sm">${item.sender}</span>
-                                <span class="text-[10px] opacity-40 font-black uppercase ml-2">To</span>
-                                <span class="font-bold text-sm text-orange-500">${item.target}</span>
-                            </div>
-                        </div>
-                        <div class="text-[11px] font-bold px-4 py-1.5 rounded-xl bg-orange-500/10 text-orange-600 border border-orange-500/20">
-                            ${item.reason}
-                        </div>
-                    `;
+                    content = `<div><span class="text-blue-400 font-bold uppercase">${item.type}</span> <span class="mx-2 opacity-30">|</span> <b>${item.user}</b> <span class="opacity-60 ml-2">${item.action || ''}</span></div>
+                               <div class="text-[10px] opacity-40 font-mono">${item.details || ''}</div>`;
                 }
+
+                div.innerHTML = `
+                    <div class="flex flex-col gap-1">${content}</div>
+                    <div class="text-right"><div class="text-[10px] font-bold opacity-30">${item.fullTime || '---'}</div></div>
+                `;
                 container.appendChild(div);
             });
         }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('btn-logs').className = tab === 'logs' ? 'px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active' : 'px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300';
-            document.getElementById('btn-reports').className = tab === 'reports' ? 'px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active' : 'px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300';
-            renderData(document.getElementById('searchInput').value);
-        }
-
-        function handleSearch() {
-            renderData(document.getElementById('searchInput').value);
-        }
-
-        window.onload = () => {
-            updateTheme();
-            fetchData();
-            setInterval(fetchData, 15000); 
-        };
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
+        setInterval(load, 10000);
+        window.onload = load;
     </script>
 </body>
 </html>
