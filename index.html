@@ -279,7 +279,8 @@ function render() {
             bodyHtml = `<span class="user-name">${l.sender || 'Unknown'}</span> подал жалобу на <span class="report-user">${l.user || 'Unknown'}</span><br>
                         <span style="opacity:0.9; font-weight: 600;">Причина: ${l.reason || 'не указана'}</span>`;
         } else {
-            bodyHtml = `<span class="user-name">${l.user || l.sender || 'System'}</span> — ${l.action || 'Действие'} <span style="opacity:0.6">${l.details || ''}</span>`;
+            const actionText = l.action ? ` — ${l.action}` : '';
+            bodyHtml = `<span class="user-name">${l.user || l.sender || 'System'}</span>${actionText} <span style="opacity:0.8">${l.details || l.reason || ''}</span>`;
         }
 
         div.innerHTML = `
