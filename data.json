@@ -1,5 +1,14 @@
 [
   {
+    "type": "REPORT",
+    "ts": 1774284580,
+    "user": "TENSEY_0",
+    "color": "#ff4d4d",
+    "details": "Жалоба №9",
+    "sender": "PavelDIPF",
+    "reason": "ЕГО БАБУШКА МОЕТ...."
+  },
+  {
     "type": "Вход",
     "action": "Вход",
     "user": "PavelDIPF",
