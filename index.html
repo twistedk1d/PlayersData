@@ -259,7 +259,6 @@ function render() {
         const nameMatch = (l.user || '').toLowerCase().includes(searchTerm) || 
                           (l.sender || '').toLowerCase().includes(searchTerm);
         
-        // Поддержка и латиницы, и кириллицы для вкладки репортов
         const isReport = typeStr === 'REPORT' || typeStr === 'РЕПОРТ';
         
         if (currentTab === 'report') return isReport && nameMatch;
@@ -291,7 +290,6 @@ function render() {
         `;
         container.appendChild(div);
     });
-}
 }
 
 setInterval(() => {
