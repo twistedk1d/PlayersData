@@ -1,5 +1,14 @@
 [
   {
+    "type": "REPORT",
+    "count": 3,
+    "user": "asd",
+    "color": "#ff4444",
+    "ts": 1774282178,
+    "sender": "PavelDIPF",
+    "reason": "sdds"
+  },
+  {
     "type": "UNMUTE",
     "action": "Снял мут",
     "user": "PavelDIPF",
