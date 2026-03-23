@@ -1,220 +1,205 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SECURE LOGS</title>
+    <meta charset="UTF-8">
+    <title>TERMINAL // CASUAL STYLE</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #d1d1d1;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-<style>
-:root {
-    --bg: #ffffff;
-    --text: #1f2328;
-    --card: #f6f8fa;
-    --border: #d0d7de;
-    --accent: #e5533d;
-}
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+        }
 
-body.dark {
-    --bg: #0d1117;
-    --text: #c9d1d9;
-    --card: #161b22;
-    --border: #30363d;
-    --accent: #ff6b6b;
-}
+        .header h1 {
+            color: #00ff41;
+            font-size: 20px;
+            letter-spacing: 4px;
+            margin: 0;
+            text-transform: uppercase;
+        }
 
-body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 20px;
-}
+        .clock {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
 
-.header { text-align:center; margin-bottom:20px; }
-.header h1 { margin:0; font-size:24px; }
-#clock { font-size:12px; opacity:0.6; }
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
 
-.nav-bar { display:flex; justify-content:center; gap:10px; margin-bottom:15px; }
-.tab-btn {
-    padding:6px 14px;
-    border-radius:6px;
-    border:1px solid var(--border);
-    cursor:pointer;
-}
-.tab-btn.active { background: var(--accent); color:#fff; }
+        .nav-item {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
 
-.cmd-line { text-align:center; margin-bottom:15px; }
-.cmd-input {
-    padding:8px 12px;
-    border-radius:6px;
-    border:1px solid var(--border);
-    width:260px;
-}
+        .nav-item:hover { color: #888; }
+        .nav-item.active { color: #00ff41; text-decoration: underline; }
 
-.container { max-width:900px; margin:auto; }
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+        }
 
-.log-card {
-    background: var(--card);
-    border:1px solid var(--border);
-    border-left:4px solid var(--accent);
-    border-radius:10px;
-    padding:12px;
-    margin-bottom:10px;
-}
+        .search-box span { color: #00ff41; margin-right: 10px; }
 
-.player-card {
-    background: var(--card);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:10px;
-    margin-bottom:6px;
-    cursor:pointer;
-}
+        input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: #00ff41;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+        }
 
-.player-card:hover { opacity:0.8; }
+        #terminal {
+            max-width: 1100px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
 
-.timestamp {
-    font-size:12px;
-    opacity:0.6;
-    float:right;
-}
+        .log-line {
+            white-space: pre-wrap;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
 
-.type-report { color: var(--accent); font-weight:bold; }
-.type-log { color: #2da44e; font-weight:bold; }
-.user { font-weight:600; }
-.reason { opacity:0.8; margin-top:4px; }
-
-</style>
+        .ts { color: #555; margin-right: 10px; }
+        .type { font-weight: bold; margin-right: 10px; }
+        .user { color: #fff; }
+        .details { color: #888; }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #222; }
+    </style>
 </head>
-
 <body>
 
-<div class="header">
-<h1>SECURE LOGS</h1>
-<div id="clock"></div>
-</div>
+    <div class="header">
+        <h1>SECURE LOGS // CASUAL STYLE</h1>
+        <div class="clock" id="clock">SYSTEM READY</div>
+    </div>
 
-<div class="nav-bar">
-<div onclick="setTab('all')" id="btn-all" class="tab-btn active">ALL</div>
-<div onclick="setTab('report')" id="btn-report" class="tab-btn">REPORTS</div>
-<div onclick="setTab('players')" id="btn-players" class="tab-btn">PLAYERS</div>
-<div id="btn-user" class="tab-btn" style="display:none"></div>
-</div>
+    <div class="nav">
+        <div onclick="setTab('all')" id="tab-all" class="nav-item active">ALL EVENTS</div>
+        <div onclick="setTab('report')" id="tab-report" class="nav-item">REPORTS</div>
+        <div id="tab-user" class="nav-item" style="display:none">TARGET</div>
+    </div>
 
-<div class="cmd-line">
-<input id="search" class="cmd-input" placeholder="Search user..." onkeydown="if(event.key==='Enter') searchPlayer()">
-</div>
+    <div class="search-box">
+        <span>root@casual-style:~$</span>
+        <input type="text" id="search" placeholder="search_user..." onkeydown="if(event.key==='Enter') searchPlayer()">
+    </div>
 
-<div id="content" class="container"></div>
+    <div id="terminal">
+        <div class="log-line">Initializing secure connection...</div>
+    </div>
 
-<script>
-const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
+    <script>
+        const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
+        let logs = [];
+        let tab = 'all';
+        let query = '';
 
-let data = [];
-let tab = 'all';
-let currentUser = '';
+        async function load() {
+            try {
+                const r = await fetch(`${DATA_URL}?v=${Date.now()}`);
+                logs = await r.json();
+                render();
+            } catch (e) {
+                document.getElementById('terminal').innerHTML = '<div style="color:red">CONNECTION ERROR</div>';
+            }
+        }
 
-function applyTheme(){
- const h = new Date().getHours();
- if(h >= 20 || h < 8){
-   document.body.classList.add('dark');
- } else {
-   document.body.classList.remove('dark');
- }
-}
+        function setTab(t) {
+            tab = t;
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + (t === 'user' ? 'user' : t)).classList.add('active');
+            if(t !== 'user') {
+                document.getElementById('tab-user').style.display = 'none';
+                query = '';
+            }
+            render();
+        }
 
-async function load(){
- const r = await fetch(DATA_URL+'?v='+Date.now());
- data = await r.json();
- render();
-}
+        function searchPlayer() {
+            const v = document.getElementById('search').value.toLowerCase().trim();
+            if(!v) return setTab('all');
+            query = v;
+            document.getElementById('tab-user').innerText = 'TARGET: ' + v.toUpperCase();
+            document.getElementById('tab-user').style.display = 'block';
+            setTab('user');
+        }
 
-function setTab(t){
- tab=t;
- document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
- document.getElementById('btn-'+t)?.classList.add('active');
- render();
-}
+        function render() {
+            const container = document.getElementById('terminal');
+            container.innerHTML = '';
 
-function searchPlayer(){
- const val = search.value.toLowerCase().trim();
- if(!val) return setTab('all');
- currentUser=val;
- btnUser.innerText=val;
- btnUser.style.display='block';
- setTab('user');
-}
+            const filtered = logs.filter(i => {
+                if(!i) return false;
+                if(tab === 'report') return i.type === 'REPORT';
+                if(tab === 'user') {
+                    const u = (i.user || i.target || '').toLowerCase();
+                    const s = (i.sender || '').toLowerCase();
+                    return u.includes(query) || s.includes(query);
+                }
+                return true;
+            });
 
-function getPlayers(){
- const set = new Set();
- data.forEach(i=>{
-  if(i.user) set.add(i.user);
-  if(i.sender) set.add(i.sender);
- });
- return Array.from(set);
-}
+            if(filtered.length === 0) {
+                container.innerHTML = '<div class="log-line">NO RECORDS FOUND</div>';
+                return;
+            }
 
-function render(){
- const c = content;
- c.innerHTML='';
+            filtered.forEach(i => {
+                const div = document.createElement('div');
+                div.className = 'log-line';
+                
+                const time = i.ts ? new Date(i.ts * 1000).toLocaleString('ru-RU') : '??:??:??';
+                const color = i.color || '#00ff41';
+                const type = (i.type || 'LOG').toUpperCase();
 
- if(tab==='players'){
-   getPlayers().forEach(p=>{
-     const div=document.createElement('div');
-     div.className='player-card';
-     div.innerHTML=p;
-     div.onclick=()=>{
-       currentUser=p.toLowerCase();
-       setTab('user');
-     };
-     c.appendChild(div);
-   });
-   return;
- }
+                let html = `<span class="ts">[${time}]</span>`;
+                html += `<span class="type" style="color:${color}">[${type}]</span>`;
+                
+                if(type === 'REPORT') {
+                    html += `<span class="user">${i.sender}</span> reported <span style="color:#ff4444">${i.user || i.target}</span> :: <span class="details">"${i.reason}"</span>`;
+                } else {
+                    html += `<span class="user">${i.user}</span> :: <span class="details">${i.action || ''} ${i.details || ''}</span>`;
+                }
 
- let filtered = data;
+                div.innerHTML = html;
+                container.appendChild(div);
+            });
+        }
 
- if(tab==='report') filtered = data.filter(i=>i.type==='report');
- if(tab==='user'){
-   filtered = data.filter(i=>{
-     const u=(i.user||i.target||'').toLowerCase();
-     const s=(i.sender||'').toLowerCase();
-     return u.includes(currentUser)||s.includes(currentUser);
-   });
- }
+        setInterval(() => {
+            document.getElementById('clock').innerText = 'SYS_TIME: ' + new Date().toLocaleTimeString();
+        }, 1000);
 
- if(!filtered.length){ c.innerHTML='NO DATA'; return; }
-
- filtered.forEach(i=>{
-   const div=document.createElement('div');
-   div.className='log-card';
-
-   const time = i.ts ? new Date(i.ts*1000).toLocaleString() : 'unknown';
-
-   if(i.type==='report'){
-     div.innerHTML=`
-     <div class="timestamp">${time}</div>
-     <div><span class="type-report">REPORT</span> <span class="user">${i.sender}</span> на <span class="user">${i.user||i.target}</span></div>
-     <div class="reason">Причина: ${i.reason}</div>`;
-   } else {
-     div.innerHTML=`
-     <div class="timestamp">${time}</div>
-     <div><span class="type-log">LOG</span> <span class="user">${i.user}</span></div>
-     <div>${i.action||''} ${i.details||''}</div>`;
-   }
-
-   c.appendChild(div);
- });
-}
-
-setInterval(()=>{
- clock.innerText=new Date().toLocaleTimeString();
- applyTheme();
-},1000);
-
-setInterval(load,30000);
-applyTheme();
-load();
-</script>
-
+        setInterval(load, 30000);
+        window.onload = load;
+    </script>
 </body>
 </html>
