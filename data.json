@@ -1,5 +1,13 @@
 [
   {
+    "type": "EXIT",
+    "action": "Выход",
+    "user": "PavelDIPF",
+    "color": "#ffff44",
+    "ts": 1774282019,
+    "details": "Сессия: 50с"
+  },
+  {
     "type": "BXOD",
     "action": "Вход",
     "user": "PavelDIPF",
