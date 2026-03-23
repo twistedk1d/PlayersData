@@ -1,5 +1,14 @@
 [
   {
+    "type": "Репорт",
+    "count": 1,
+    "user": "assdfddf",
+    "color": "#d63031",
+    "ts": 1774283670,
+    "sender": "PavelDIPF",
+    "reason": "sadsdd3223sd"
+  },
+  {
     "type": "Сообщение",
     "action": "написал:",
     "user": "PavelDIPF",
