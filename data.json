@@ -1,6 +1,13 @@
 [
   {
     "type": "log",
+    "action": "Вход",
+    "user": "PavelDIPF",
+    "details": "ID: 4913628074",
+    "ts": 1774278018
+  },
+  {
+    "type": "log",
     "action": "Выход",
     "user": "PavelDIPF",
     "details": "Сессия: 110с",
