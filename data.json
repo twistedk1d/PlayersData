@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "type": "log",
+    "action": "Вход в игру",
+    "user": "PavelDIPF",
+    "details": "ID: 4913628074",
+    "time": "16:30:52"
+  }
+]
