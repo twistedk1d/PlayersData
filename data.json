@@ -1,5 +1,12 @@
 [
   {
+    "type": "log",
+    "action": "Выход из игры",
+    "user": "PavelDIPF",
+    "details": "Session duration: 48s",
+    "time": "16:31:41"
+  },
+  {
     "type": "report",
     "time": "16:31:30",
     "target": "TENSEY_0",
