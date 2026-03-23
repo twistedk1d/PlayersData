@@ -1,5 +1,14 @@
 [
   {
+    "type": "MUTE",
+    "ts": 1774282159,
+    "user": "PavelDIPF",
+    "color": "#ffaa00",
+    "details": "Срок: 10 мин.",
+    "sender": "PavelDIPF",
+    "reason": "фу"
+  },
+  {
     "type": "CHAT",
     "action": "написал:",
     "user": "PavelDIPF",
