@@ -1,5 +1,14 @@
 [
   {
+    "type": "REPORT",
+    "count": 8,
+    "user": "TENSEY_0",
+    "color": "#ff0033",
+    "ts": 1774279832,
+    "sender": "PavelDIPF",
+    "reason": "ПЛОХАЯ СОБАЧКА"
+  },
+  {
     "type": "CONNECT",
     "action": "Вход в систему",
     "user": "PavelDIPF",
