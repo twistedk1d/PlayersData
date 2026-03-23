@@ -259,7 +259,10 @@ function render() {
         const nameMatch = (l.user || '').toLowerCase().includes(searchTerm) || 
                           (l.sender || '').toLowerCase().includes(searchTerm);
         
-        if (currentTab === 'report') return typeStr === 'REPORT' && nameMatch;
+        // Поддержка и латиницы, и кириллицы для вкладки репортов
+        const isReport = typeStr === 'REPORT' || typeStr === 'РЕПОРТ';
+        
+        if (currentTab === 'report') return isReport && nameMatch;
         return nameMatch;
     });
 
@@ -270,11 +273,12 @@ function render() {
         const date = l.ts ? new Date(l.ts * 1000).toLocaleString() : '---';
         const color = l.color || '#2ecc71';
         const type = (l.type || 'LOG').toUpperCase();
+        const isReport = type === 'REPORT' || type === 'РЕПОРТ';
 
         let bodyHtml = '';
-        if(type === 'REPORT') {
+        if(isReport) {
             bodyHtml = `<span class="user-name">${l.sender || 'Unknown'}</span> подал жалобу на <span class="report-user">${l.user || 'Unknown'}</span><br>
-                        <span style="opacity:0.8">Причина: ${l.reason || 'не указана'}</span>`;
+                        <span style="opacity:0.9; font-weight: 600;">Причина: ${l.reason || 'не указана'}</span>`;
         } else {
             bodyHtml = `<span class="user-name">${l.user || l.sender || 'System'}</span> — ${l.action || 'Действие'} <span style="opacity:0.6">${l.details || ''}</span>`;
         }
@@ -287,6 +291,7 @@ function render() {
         `;
         container.appendChild(div);
     });
+}
 }
 
 setInterval(() => {
