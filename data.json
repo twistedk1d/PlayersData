@@ -1,5 +1,13 @@
 [
   {
+    "type": "DISCONNECT",
+    "action": "Отключение",
+    "user": "PavelDIPF",
+    "color": "#ffaa00",
+    "ts": 1774280121,
+    "details": "Сессия: 337с"
+  },
+  {
     "type": "REPORT",
     "count": 8,
     "user": "TENSEY_0",
