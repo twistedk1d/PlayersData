@@ -1,5 +1,13 @@
 [
   {
+    "type": "Вход",
+    "action": "Вход",
+    "user": "PavelDIPF",
+    "color": "#44ff44",
+    "ts": 1774282378,
+    "details": "ID:4913628074"
+  },
+  {
     "type": "EXIT",
     "action": "Выход",
     "user": "PavelDIPF",
