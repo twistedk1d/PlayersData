@@ -1,5 +1,13 @@
 [
   {
+    "type": "Сообщение",
+    "action": "написал:",
+    "user": "PavelDIPF",
+    "color": "#3498db",
+    "ts": 1774282546,
+    "details": "фівівві"
+  },
+  {
     "type": "Репорт",
     "count": 4,
     "user": "asd",
