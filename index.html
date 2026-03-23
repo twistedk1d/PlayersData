@@ -5,56 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casual Style | LOGS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style id="theme-style">
-        body { transition: background-color 0.3s, color 0.3s; font-family: 'Inter', sans-serif; }
-        .glass { backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); transition: background 0.3s; }
-        .log-card { transition: transform 0.2s, background 0.2s; }
-        .log-card:hover { transform: translateY(-1px); }
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            transition: all 0.4s ease; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+        }
+        .glass { 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .log-card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .log-card:hover { 
+            transform: scale(1.01) translateX(4px); 
+        }
         
-        .theme-night { background-color: #1a1c23; color: #e2e8f0; }
-        .theme-night .glass { background: rgba(30, 41, 59, 0.7); border-color: rgba(255,255,255,0.05); }
-        .theme-night .tab-active { border-bottom: 2px solid #22c55e; color: #22c55e; }
-        .theme-night .btn-primary { background-color: #22c55e; color: white; }
-        .theme-night .input-field { background-color: #111827; border-color: #374151; color: white; }
+        .theme-night { background: #0f1115; color: #f1f5f9; }
+        .theme-night .glass { background: rgba(22, 24, 30, 0.8); }
+        .theme-night .card-bg { background: rgba(30, 35, 45, 0.4); }
+        .theme-night .tab-active { color: #4ade80; border-bottom: 2px solid #4ade80; }
+        .theme-night .input-field { background: #1a1d24; border: 1px solid #2d333f; color: white; }
 
-        .theme-day { background-color: #f8fafc; color: #1e293b; }
-        .theme-day .glass { background: rgba(255, 255, 255, 0.8); border-color: rgba(0,0,0,0.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .theme-day .tab-active { border-bottom: 2px solid #16a34a; color: #16a34a; }
-        .theme-day .btn-primary { background-color: #16a34a; color: white; }
-        .theme-day .input-field { background-color: #ffffff; border-color: #d1d5db; color: #1e293b; }
+        .theme-day { background: #f0f4f8; color: #334155; }
+        .theme-day .glass { background: rgba(255, 255, 255, 0.7); border-color: rgba(0,0,0,0.05); }
+        .theme-day .card-bg { background: rgba(255, 255, 255, 0.5); }
+        .theme-day .tab-active { color: #16a34a; border-bottom: 2px solid #16a34a; }
+        .theme-day .input-field { background: white; border: 1px solid #e2e8f0; color: #334155; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-10">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-8 flex justify-between items-center">
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-10 flex flex-wrap justify-between items-end gap-4">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight">Casual Style <span class="text-green-500 font-mono">[LOGS]</span></h1>
-                <p id="time-status" class="text-gray-500 text-sm italic"></p>
+                <h1 class="text-3xl font-extrabold tracking-tight mb-1">Casual Style <span class="text-green-500 opacity-80 uppercase text-xl font-mono">[Logs]</span></h1>
+                <p id="time-status" class="opacity-50 text-xs font-medium uppercase tracking-widest"></p>
             </div>
-            <div id="status" class="flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                Live Data Connected
+            <div class="flex items-center gap-3 px-4 py-2 rounded-2xl glass text-[11px] font-bold uppercase tracking-wider">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                Live Sync Active
             </div>
         </header>
 
-        <div class="glass rounded-xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between">
-            <nav class="flex gap-6">
-                <button onclick="switchTab('logs')" id="btn-logs" class="tab-active pb-1 text-sm font-bold transition-all">Последние логи</button>
-                <button onclick="switchTab('reports')" id="btn-reports" class="pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all">Репорты</button>
+        <div class="glass rounded-3xl p-2 mb-8 flex flex-wrap gap-2 items-center justify-between shadow-xl shadow-black/5">
+            <nav class="flex p-2 gap-2">
+                <button onclick="switchTab('logs')" id="btn-logs" class="px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active">События</button>
+                <button onclick="switchTab('reports')" id="btn-reports" class="px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300">Жалобы</button>
             </nav>
             
-            <div class="relative w-full md:w-80">
-                <input type="text" id="searchInput" placeholder="Поиск ника (напр. PavelDIPF)" 
-                       class="input-field w-full border rounded-lg py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
-                <button onclick="handleSearch()" class="btn-primary absolute right-1.5 top-1.5 px-4 py-1 rounded text-xs font-black uppercase tracking-wider transition-all hover:opacity-90">
-                    ИСКАТЬ
+            <div class="relative w-full md:w-auto md:min-w-[350px] p-1">
+                <input type="text" id="searchInput" placeholder="Поиск по никнейму..." 
+                       class="input-field w-full rounded-2xl py-3 px-5 text-sm focus:outline-none focus:ring-4 focus:ring-green-500/10 transition-all">
+                <button onclick="handleSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white px-5 py-1.5 rounded-xl text-[10px] font-black tracking-tighter uppercase transition-all shadow-lg shadow-green-500/20">
+                    Найти
                 </button>
             </div>
         </div>
 
-        <div id="content-area" class="space-y-2">
-            <div class="text-center py-10 text-gray-400">Загрузка данных из GitHub...</div>
+        <div id="content-area" class="grid gap-3">
+            <div class="text-center py-20 opacity-40 animate-pulse">Синхронизация с базой данных...</div>
         </div>
     </div>
 
@@ -68,68 +83,73 @@
             const isNight = hour >= 20 || hour < 8;
             const body = document.body;
             const timeStatus = document.getElementById('time-status');
-
-            if (isNight) {
-                body.className = 'p-4 md:p-8 theme-night';
-                timeStatus.innerText = 'Ночной режим мониторинга';
-            } else {
-                body.className = 'p-4 md:p-8 theme-day';
-                timeStatus.innerText = 'Дневной режим мониторинга';
-            }
+            body.className = isNight ? 'p-4 md:p-10 theme-night' : 'p-4 md:p-10 theme-day';
+            timeStatus.innerText = isNight ? '🌙 Night Monitoring Mode' : '☀️ Day Monitoring Mode';
         }
 
         async function fetchData() {
             try {
-                const response = await fetch(JSON_URL);
-                allData = await response.json();
+                const response = await fetch(`${JSON_URL}?nocache=${Date.now()}`);
+                const text = await response.text();
+                try {
+                    allData = JSON.parse(text);
+                    if (!Array.isArray(allData)) allData = [];
+                } catch (e) {
+                    allData = [];
+                }
                 renderData();
             } catch (error) {
-                document.getElementById('content-area').innerHTML = `<div class="text-center py-20 text-red-500 font-bold">Ошибка загрузки data.json: ${error.message}</div>`;
+                document.getElementById('content-area').innerHTML = `<div class="text-center py-20 text-red-400 font-bold">Ошибка соединения</div>`;
             }
         }
 
         function renderData(filter = '') {
             const container = document.getElementById('content-area');
             container.innerHTML = '';
+            const searchLower = filter.toLowerCase();
 
             const filtered = allData.filter(item => {
                 const matchesTab = currentTab === 'logs' ? item.type === 'log' : item.type === 'report';
-                const searchLower = filter.toLowerCase();
-                const matchesSearch = 
+                const matchesSearch = !filter || 
                     (item.user && item.user.toLowerCase().includes(searchLower)) || 
                     (item.target && item.target.toLowerCase().includes(searchLower)) ||
                     (item.sender && item.sender.toLowerCase().includes(searchLower));
-                
-                return matchesTab && (filter === '' || matchesSearch);
+                return matchesTab && matchesSearch;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-20 text-gray-500">Записей не найдено</div>`;
+                container.innerHTML = `<div class="text-center py-32 opacity-30 font-bold italic tracking-widest">ДАННЫЕ ОТСУТСТВУЮТ</div>`;
                 return;
             }
 
             filtered.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'glass p-3 px-5 rounded-lg log-card flex items-center justify-between border-l-4 ' + 
-                                (item.type === 'report' ? 'border-l-orange-500' : 'border-l-green-500');
+                div.className = 'glass p-4 px-6 rounded-2xl log-card card-bg flex flex-wrap items-center justify-between gap-4 border-l-[6px] ' + 
+                                (item.type === 'report' ? 'border-orange-500' : 'border-green-500');
                 
                 if (item.type === 'log') {
                     div.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <span class="text-green-500 font-mono text-xs font-bold">[${item.time}]</span>
-                            <span class="font-black text-sm uppercase tracking-wide">${item.user}</span>
-                            <span class="text-gray-400 text-sm tracking-tight">→ ${item.action}</span>
+                        <div class="flex items-center gap-5">
+                            <span class="opacity-30 font-mono text-[10px] font-bold tracking-tighter">${item.time}</span>
+                            <span class="font-extrabold text-sm tracking-tight">${item.user}</span>
+                            <span class="opacity-60 text-xs px-3 py-1 rounded-lg bg-black/5">${item.action}</span>
                         </div>
-                        <div class="text-[10px] opacity-60 font-mono">${item.details || ''}</div>
+                        <div class="text-[10px] font-bold opacity-40 font-mono italic uppercase">${item.details || ''}</div>
                     `;
                 } else {
                     div.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <span class="text-orange-500 font-mono text-xs font-bold">[${item.time}]</span>
-                            <span class="text-xs opacity-70">SENDER:</span> <span class="font-bold text-sm">${item.sender}</span>
-                            <span class="text-xs opacity-70">TARGET:</span> <span class="font-bold text-sm text-orange-500">${item.target}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-orange-500 font-mono text-[10px] font-bold">${item.time}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] opacity-40 font-black uppercase">From</span>
+                                <span class="font-bold text-sm">${item.sender}</span>
+                                <span class="text-[10px] opacity-40 font-black uppercase ml-2">To</span>
+                                <span class="font-bold text-sm text-orange-500">${item.target}</span>
+                            </div>
                         </div>
-                        <div class="text-xs font-medium px-3 py-1 rounded bg-orange-500/10 text-orange-600 border border-orange-500/20">REASON: ${item.reason}</div>
+                        <div class="text-[11px] font-bold px-4 py-1.5 rounded-xl bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                            ${item.reason}
+                        </div>
                     `;
                 }
                 container.appendChild(div);
@@ -138,8 +158,8 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            document.getElementById('btn-logs').className = tab === 'logs' ? 'tab-active pb-1 text-sm font-bold transition-all' : 'pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all';
-            document.getElementById('btn-reports').className = tab === 'reports' ? 'tab-active pb-1 text-sm font-bold transition-all' : 'pb-1 text-sm font-bold text-gray-400 hover:text-green-500 transition-all';
+            document.getElementById('btn-logs').className = tab === 'logs' ? 'px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active' : 'px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300';
+            document.getElementById('btn-reports').className = tab === 'reports' ? 'px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 tab-active' : 'px-6 py-2 rounded-2xl text-sm font-bold opacity-40 hover:opacity-100 transition-all duration-300';
             renderData(document.getElementById('searchInput').value);
         }
 
@@ -150,7 +170,7 @@
         window.onload = () => {
             updateTheme();
             fetchData();
-            setInterval(fetchData, 30000); 
+            setInterval(fetchData, 15000); 
         };
     </script>
 </body>
