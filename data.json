@@ -1,5 +1,12 @@
 [
   {
+    "fullTime": "23.03.2026 16:49:47",
+    "type": "log",
+    "action": "Выход",
+    "user": "PavelDIPF",
+    "details": "Сессия: 242с"
+  },
+  {
     "fullTime": "23.03.2026 16:46:54",
     "type": "report",
     "count": 1,
