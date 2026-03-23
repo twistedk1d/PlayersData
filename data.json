@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "type": "CONNECT",
+    "action": "Вход в систему",
+    "user": "PavelDIPF",
+    "color": "#00ffcc",
+    "ts": 1774279784,
+    "details": "ID: 4913628074"
+  }
+]
