@@ -1,5 +1,13 @@
 [
   {
+    "type": "BXOD",
+    "action": "Вход",
+    "user": "PavelDIPF",
+    "color": "#44ff44",
+    "ts": 1774281905,
+    "details": "ID:4913628074"
+  },
+  {
     "type": "DISCONNECT",
     "action": "Отключение",
     "user": "PavelDIPF",
