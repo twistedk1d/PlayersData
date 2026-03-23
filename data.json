@@ -1,5 +1,13 @@
 [
   {
+    "type": "CHAT",
+    "action": "написал:",
+    "user": "PavelDIPF",
+    "color": "#3498db",
+    "ts": 1774282133,
+    "details": "sad"
+  },
+  {
     "type": "BXOD",
     "action": "Вход",
     "user": "PavelDIPF",
