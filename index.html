@@ -1,184 +1,220 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>TERMINAL // CASUAL STYLE</title>
-    <style>
-        body {
-            background-color: #030303;
-            color: #00ff00;
-            font-family: 'Consolas', 'Courier New', monospace;
-            margin: 0;
-            padding: 30px;
-            font-size: 14px;
-        }
-        .header-center {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-        }
-        .header-center h1 {
-            margin: 0 0 5px 0;
-            font-size: 24px;
-            letter-spacing: 2px;
-        }
-        .nav-bar {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        .tab-btn {
-            cursor: pointer;
-            color: #555;
-            transition: 0.2s;
-        }
-        .tab-btn:hover {
-            color: #aaa;
-        }
-        .tab-btn.active {
-            color: #00ff00;
-            font-weight: bold;
-        }
-        .cmd-line {
-            margin-bottom: 20px;
-        }
-        .cmd-input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            width: 300px;
-            border-bottom: 1px solid #555;
-        }
-        .log-container {
-            white-space: pre-wrap;
-            line-height: 1.6;
-        }
-        .log-line {
-            margin-bottom: 4px;
-        }
-        .timestamp {
-            color: #666;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>SECURE LOGS</title>
+
+<style>
+:root {
+    --bg: #ffffff;
+    --text: #1f2328;
+    --card: #f6f8fa;
+    --border: #d0d7de;
+    --accent: #e5533d;
+}
+
+body.dark {
+    --bg: #0d1117;
+    --text: #c9d1d9;
+    --card: #161b22;
+    --border: #30363d;
+    --accent: #ff6b6b;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.header { text-align:center; margin-bottom:20px; }
+.header h1 { margin:0; font-size:24px; }
+#clock { font-size:12px; opacity:0.6; }
+
+.nav-bar { display:flex; justify-content:center; gap:10px; margin-bottom:15px; }
+.tab-btn {
+    padding:6px 14px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    cursor:pointer;
+}
+.tab-btn.active { background: var(--accent); color:#fff; }
+
+.cmd-line { text-align:center; margin-bottom:15px; }
+.cmd-input {
+    padding:8px 12px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    width:260px;
+}
+
+.container { max-width:900px; margin:auto; }
+
+.log-card {
+    background: var(--card);
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    border-radius:10px;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+.player-card {
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px;
+    margin-bottom:6px;
+    cursor:pointer;
+}
+
+.player-card:hover { opacity:0.8; }
+
+.timestamp {
+    font-size:12px;
+    opacity:0.6;
+    float:right;
+}
+
+.type-report { color: var(--accent); font-weight:bold; }
+.type-log { color: #2da44e; font-weight:bold; }
+.user { font-weight:600; }
+.reason { opacity:0.8; margin-top:4px; }
+
+</style>
 </head>
+
 <body>
 
-    <div class="header-center">
-        <h1>SECURE LOGS // CASUAL STYLE</h1>
-        <div id="clock" style="color: #666;"></div>
-    </div>
+<div class="header">
+<h1>SECURE LOGS</h1>
+<div id="clock"></div>
+</div>
 
-    <div class="nav-bar">
-        <span onclick="setTab('all')" id="btn-all" class="tab-btn active">[ ALL EVENTS ]</span>
-        <span onclick="setTab('report')" id="btn-report" class="tab-btn">[ REPORTS ]</span>
-        <span id="btn-user" class="tab-btn" style="display: none;">[ FILTER ]</span>
-    </div>
+<div class="nav-bar">
+<div onclick="setTab('all')" id="btn-all" class="tab-btn active">ALL</div>
+<div onclick="setTab('report')" id="btn-report" class="tab-btn">REPORTS</div>
+<div onclick="setTab('players')" id="btn-players" class="tab-btn">PLAYERS</div>
+<div id="btn-user" class="tab-btn" style="display:none"></div>
+</div>
 
-    <div class="cmd-line">
-        <span>root@casual-style:~# search_target --user </span>
-        <input type="text" id="search" class="cmd-input" placeholder="_" onkeydown="if(event.key === 'Enter') searchPlayer()">
-    </div>
+<div class="cmd-line">
+<input id="search" class="cmd-input" placeholder="Search user..." onkeydown="if(event.key==='Enter') searchPlayer()">
+</div>
 
-    <div id="logs-container" class="log-container"></div>
+<div id="content" class="container"></div>
 
-    <script>
-        const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
-        let allData = [];
-        let currentTab = 'all';
-        let currentUser = '';
+<script>
+const DATA_URL = 'https://raw.githubusercontent.com/twistedk1d/PlayersData/refs/heads/main/data.json';
 
-        async function load() {
-            try {
-                const r = await fetch(`${DATA_URL}?v=${Date.now()}`);
-                const data = await r.json();
-                allData = Array.isArray(data) ? data.filter(i => i !== null) : [];
-                render();
-            } catch (e) {
-                document.getElementById('logs-container').innerText = 'FATAL ERROR: UNABLE TO FETCH DATASTREAM';
-            }
-        }
+let data = [];
+let tab = 'all';
+let currentUser = '';
 
-        function setTab(t) {
-            currentTab = t;
-            document.getElementById('btn-all').className = t === 'all' ? 'tab-btn active' : 'tab-btn';
-            document.getElementById('btn-report').className = t === 'report' ? 'tab-btn active' : 'tab-btn';
-            document.getElementById('btn-user').className = t === 'user' ? 'tab-btn active' : 'tab-btn';
-            
-            if (t !== 'user') {
-                document.getElementById('btn-user').style.display = 'none';
-                currentUser = '';
-                document.getElementById('search').value = '';
-            }
-            render();
-        }
+function applyTheme(){
+ const h = new Date().getHours();
+ if(h >= 20 || h < 8){
+   document.body.classList.add('dark');
+ } else {
+   document.body.classList.remove('dark');
+ }
+}
 
-        function searchPlayer() {
-            const val = document.getElementById('search').value.toLowerCase().trim();
-            if (!val) {
-                setTab('all');
-                return;
-            }
-            currentUser = val;
-            const btn = document.getElementById('btn-user');
-            btn.innerText = `[ TARGET: ${val.toUpperCase()} ]`;
-            btn.style.display = 'inline';
-            setTab('user');
-        }
+async function load(){
+ const r = await fetch(DATA_URL+'?v='+Date.now());
+ data = await r.json();
+ render();
+}
 
-        function render() {
-            const container = document.getElementById('logs-container');
-            container.innerHTML = '';
+function setTab(t){
+ tab=t;
+ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+ document.getElementById('btn-'+t)?.classList.add('active');
+ render();
+}
 
-            const filtered = allData.filter(item => {
-                const type = (item.type || '').toLowerCase();
-                if (currentTab === 'report' && type !== 'report') return false;
-                if (currentTab === 'user') {
-                    const u = (item.user || item.target || '').toLowerCase();
-                    const s = (item.sender || '').toLowerCase();
-                    return u.includes(currentUser) || s.includes(currentUser);
-                }
-                return true;
-            });
+function searchPlayer(){
+ const val = search.value.toLowerCase().trim();
+ if(!val) return setTab('all');
+ currentUser=val;
+ btnUser.innerText=val;
+ btnUser.style.display='block';
+ setTab('user');
+}
 
-            if (filtered.length === 0) {
-                container.innerHTML = 'root@casual-style:~# NO DATA FOUND FOR THIS QUERY';
-                return;
-            }
+function getPlayers(){
+ const set = new Set();
+ data.forEach(i=>{
+  if(i.user) set.add(i.user);
+  if(i.sender) set.add(i.sender);
+ });
+ return Array.from(set);
+}
 
-            filtered.forEach(item => {
-                const ts = item.ts ? new Date(item.ts * 1000) : null;
-                const timeStr = ts ? 
-                    `${ts.getDate().toString().padStart(2, '0')}.${(ts.getMonth()+1).toString().padStart(2, '0')}.${ts.getFullYear()} ${ts.getHours().toString().padStart(2, '0')}:${ts.getMinutes().toString().padStart(2, '0')}:${ts.getSeconds().toString().padStart(2, '0')}` 
-                    : (item.fullTime || '??.??.???? ??:??:??');
-                
-                const div = document.createElement('div');
-                div.className = 'log-line';
-                
-                const color = item.color || (item.type === 'report' ? '#ff0033' : '#00ff00');
-                const tType = (item.type || 'UNKNOWN').toUpperCase();
-                
-                if (tType === 'REPORT') {
-                    div.innerHTML = `<span class="timestamp">[${timeStr}]</span> <span style="color: ${color}">[${tType}]</span> ${item.sender} -> ${item.user || item.target} :: REASON: "${item.reason}"`;
-                } else {
-                    div.innerHTML = `<span class="timestamp">[${timeStr}]</span> <span style="color: ${color}">[${tType}]</span> ${item.user} :: ${item.action || ''} :: ${item.details || ''}`;
-                }
-                
-                container.appendChild(div);
-            });
-        }
+function render(){
+ const c = content;
+ c.innerHTML='';
 
-        setInterval(() => {
-            const d = new Date();
-            document.getElementById('clock').innerText = `SYS.TIME: ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
-        }, 1000);
-        
-        setInterval(load, 30000);
-        window.onload = load;
-    </script>
+ if(tab==='players'){
+   getPlayers().forEach(p=>{
+     const div=document.createElement('div');
+     div.className='player-card';
+     div.innerHTML=p;
+     div.onclick=()=>{
+       currentUser=p.toLowerCase();
+       setTab('user');
+     };
+     c.appendChild(div);
+   });
+   return;
+ }
+
+ let filtered = data;
+
+ if(tab==='report') filtered = data.filter(i=>i.type==='report');
+ if(tab==='user'){
+   filtered = data.filter(i=>{
+     const u=(i.user||i.target||'').toLowerCase();
+     const s=(i.sender||'').toLowerCase();
+     return u.includes(currentUser)||s.includes(currentUser);
+   });
+ }
+
+ if(!filtered.length){ c.innerHTML='NO DATA'; return; }
+
+ filtered.forEach(i=>{
+   const div=document.createElement('div');
+   div.className='log-card';
+
+   const time = i.ts ? new Date(i.ts*1000).toLocaleString() : 'unknown';
+
+   if(i.type==='report'){
+     div.innerHTML=`
+     <div class="timestamp">${time}</div>
+     <div><span class="type-report">REPORT</span> <span class="user">${i.sender}</span> на <span class="user">${i.user||i.target}</span></div>
+     <div class="reason">Причина: ${i.reason}</div>`;
+   } else {
+     div.innerHTML=`
+     <div class="timestamp">${time}</div>
+     <div><span class="type-log">LOG</span> <span class="user">${i.user}</span></div>
+     <div>${i.action||''} ${i.details||''}</div>`;
+   }
+
+   c.appendChild(div);
+ });
+}
+
+setInterval(()=>{
+ clock.innerText=new Date().toLocaleTimeString();
+ applyTheme();
+},1000);
+
+setInterval(load,30000);
+applyTheme();
+load();
+</script>
+
 </body>
 </html>
