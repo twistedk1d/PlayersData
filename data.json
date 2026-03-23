@@ -1,5 +1,13 @@
 [
   {
+    "type": "Размут",
+    "action": "Снял мут",
+    "user": "PavelDIPF",
+    "color": "#1abc9c",
+    "ts": 1774283655,
+    "sender": "PavelDIPF"
+  },
+  {
     "type": "Сообщение",
     "action": "написал:",
     "user": "PavelDIPF",
