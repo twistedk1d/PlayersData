@@ -1,5 +1,13 @@
 [
   {
+    "fullTime": "23.03.2026 16:46:50",
+    "type": "report",
+    "count": 7,
+    "user": "TENSEY_0",
+    "sender": "PavelDIPF",
+    "reason": "фыв"
+  },
+  {
     "fullTime": "23.03.2026 16:45:45",
     "type": "log",
     "action": "Вход",
