@@ -1,5 +1,13 @@
 [
   {
+    "type": "Выход",
+    "action": "Выход",
+    "user": "PavelDIPF",
+    "color": "#8B0000",
+    "ts": 1774282552,
+    "details": "Сессия: 174с"
+  },
+  {
     "type": "Сообщение",
     "action": "написал:",
     "user": "PavelDIPF",
