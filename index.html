@@ -2,46 +2,44 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Casual Style | PANEL</title>
+    <title>Casual Style | Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; transition: 0.4s; }
-        .theme-dark { background: #0f1115; color: #e2e8f0; }
-        .theme-light { background: #f3f4f6; color: #1f2937; }
-        .ui-card { backdrop-filter: blur(10px); border: 1px solid rgba(128,128,128,0.1); }
-        .theme-dark .ui-card { background: rgba(22, 27, 34, 0.6); }
-        .theme-light .ui-card { background: rgba(255, 255, 255, 0.8); shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .tab-btn { padding: 8px 20px; border-radius: 10px; font-weight: 700; opacity: 0.5; transition: 0.2s; }
-        .tab-btn.active { opacity: 1; background: #22c55e; color: white; }
-        .log-row { border-left: 4px solid #3b82f6; }
-        .log-report { border-left-color: #ef4444; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: 0.2s; }
+        .theme-dark { background: #1a1d21; color: #ffffff; }
+        .theme-light { background: #f0f2f5; color: #1c1e21; }
+        .card { border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); transition: 0.2s; }
+        .theme-dark .card { background: #24292e; border-color: #30363d; }
+        .theme-light .card { background: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tab-btn { padding: 10px 20px; font-weight: 600; border-bottom: 3px solid transparent; opacity: 0.6; }
+        .tab-btn.active { opacity: 1; border-bottom-color: #22c55e; color: #22c55e; }
+        .log-border { border-left-width: 4px; }
+        .border-report { border-left-color: #ef4444; }
+        .border-log { border-left-color: #3b82f6; }
     </style>
 </head>
-<body class="p-4 md:p-10 theme-dark">
+<body class="theme-dark">
 
-    <div class="max-w-5xl mx-auto">
-        <header class="flex justify-between items-end mb-8">
-            <div>
-                <h1 class="text-3xl font-black uppercase tracking-tighter">Casual <span class="text-green-500">Style</span></h1>
-                <p id="theme-status" class="text-[10px] font-bold opacity-50 mt-1 uppercase tracking-widest"></p>
-            </div>
-            <div id="clock" class="text-xs font-mono opacity-50"></div>
-        </header>
+    <div class="container mx-auto max-w-6xl p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Управление логами <span class="text-green-500">Casual Style</span></h1>
+            <div id="clock" class="font-mono text-sm opacity-60"></div>
+        </div>
 
-        <div class="ui-card rounded-2xl p-3 mb-6 flex flex-wrap gap-4 items-center justify-between">
-            <div class="flex gap-1">
-                <button onclick="setTab('all')" id="tab-all" class="tab-btn active">СОБЫТИЯ</button>
-                <button onclick="setTab('report')" id="tab-report" class="tab-btn">ЖАЛОБЫ</button>
-                <button onclick="setTab('user')" id="tab-user" class="tab-btn hidden"></button>
+        <div class="card p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="flex">
+                <button onclick="setTab('all')" id="btn-all" class="tab-btn active">ВСЕ СОБЫТИЯ</button>
+                <button onclick="setTab('report')" id="btn-report" class="tab-btn">ЖАЛОБЫ</button>
+                <button onclick="setTab('user')" id="btn-user" class="tab-btn hidden"></button>
             </div>
-            <div class="relative w-full md:w-80">
-                <input type="text" id="search" placeholder="Никнейм игрока..." class="w-full bg-black/10 border border-white/5 rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500 transition-all">
-                <button onclick="searchPlayer()" class="absolute right-2 top-2 bg-green-500 text-white text-[10px] px-4 py-2 rounded-lg font-black">ПОИСК</button>
+            <div class="flex gap-2 w-full md:w-auto">
+                <input type="text" id="search" placeholder="Поиск по нику..." class="flex-1 md:w-64 bg-transparent border border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-green-500">
+                <button onclick="searchPlayer()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold">ПОИСК</button>
             </div>
         </div>
 
-        <div id="logs-container" class="space-y-2"></div>
+        <div id="logs-container" class="flex flex-col gap-3"></div>
     </div>
 
     <script>
@@ -52,20 +50,8 @@
 
         function updateTheme() {
             const hour = new Date().getHours();
-            const isNight = hour >= 20 || hour < 7;
-            document.body.className = isNight ? 'p-4 md:p-10 theme-dark' : 'p-4 md:p-10 theme-light';
-            document.getElementById('theme-status').innerText = isNight ? '🌙 Ночной мониторинг' : '☀️ Дневной режим';
-        }
-
-        function setTab(t) {
-            currentTab = t;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + (t === 'user' ? 'user' : t)).classList.add('active');
-            if (t !== 'user') {
-                document.getElementById('tab-user').classList.add('hidden');
-                currentUser = '';
-            }
-            render();
+            const isNight = hour >= 20 || hour < 8;
+            document.body.className = isNight ? 'theme-dark' : 'theme-light';
         }
 
         async function load() {
@@ -74,14 +60,25 @@
                 const data = await r.json();
                 allData = Array.isArray(data) ? data.filter(i => i !== null) : [];
                 render();
-            } catch (e) { console.error("Data error"); }
+            } catch (e) { console.error("Load error"); }
+        }
+
+        function setTab(t) {
+            currentTab = t;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + (t === 'user' ? 'user' : t)).classList.add('active');
+            if (t !== 'user') {
+                document.getElementById('btn-user').classList.add('hidden');
+                currentUser = '';
+            }
+            render();
         }
 
         function searchPlayer() {
             const val = document.getElementById('search').value.toLowerCase().trim();
             if (!val) return;
             currentUser = val;
-            const btn = document.getElementById('tab-user');
+            const btn = document.getElementById('btn-user');
             btn.innerText = `ИГРОК: ${val.toUpperCase()}`;
             btn.classList.remove('hidden');
             setTab('user');
@@ -102,20 +99,33 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div class="text-center py-20 opacity-20 font-bold italic">НЕТ ДАННЫХ</div>';
+                container.innerHTML = '<div class="text-center py-10 opacity-40">Нет записей для отображения</div>';
                 return;
             }
 
             filtered.forEach(item => {
-                const date = item.ts ? new Date(item.ts * 1000).toLocaleString() : (item.fullTime || '---');
                 const div = document.createElement('div');
-                div.className = `ui-card p-4 rounded-xl flex justify-between items-center log-row ${item.type === 'report' ? 'log-report' : ''}`;
+                const isReport = item.type === 'report';
+                div.className = `card p-4 log-border ${isReport ? 'border-report' : 'border-log'} flex justify-between items-center`;
                 
-                let main = item.type === 'report' 
-                    ? `<div><span class="text-red-500 font-black text-[10px] mr-2">REPORT</span><b>${item.sender}</b> → <b class="text-red-500">${item.user || item.target}</b><br><span class="text-xs opacity-60">${item.reason}</span></div>`
-                    : `<div><span class="text-blue-500 font-black text-[10px] mr-2 uppercase">${item.type}</span><b>${item.user}</b> <span class="opacity-50 ml-1">— ${item.action || ''}</span><br><span class="text-[10px] opacity-40 font-mono">${item.details || ''}</span></div>`;
+                const time = item.ts ? new Date(item.ts * 1000).toLocaleString('ru-RU') : (item.fullTime || '---');
+                
+                let content = '';
+                if (isReport) {
+                    content = `<div>
+                        <span class="text-red-500 font-bold text-xs uppercase mr-2">Репорт</span>
+                        <span class="font-bold">${item.sender}</span> <span class="opacity-50">на</span> <span class="font-bold text-red-500">${item.user || item.target}</span>
+                        <div class="text-sm mt-1">Причина: <span class="italic text-gray-400">${item.reason}</span></div>
+                    </div>`;
+                } else {
+                    content = `<div>
+                        <span class="text-blue-500 font-bold text-xs uppercase mr-2">${item.type}</span>
+                        <span class="font-bold">${item.user}</span> <span class="opacity-50 ml-2">— ${item.action || ''}</span>
+                        <div class="text-xs opacity-40 mt-1">${item.details || ''}</div>
+                    </div>`;
+                }
 
-                div.innerHTML = `${main}<div class="text-[10px] font-mono opacity-30 font-bold">${date}</div>`;
+                div.innerHTML = `${content} <div class="text-right text-[11px] font-mono opacity-40 font-bold">${time}</div>`;
                 container.appendChild(div);
             });
         }
@@ -123,7 +133,7 @@
         updateTheme();
         setInterval(updateTheme, 60000);
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
-        setInterval(load, 15000);
+        setInterval(load, 30000);
         window.onload = load;
     </script>
 </body>
