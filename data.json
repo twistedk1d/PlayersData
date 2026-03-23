@@ -1,5 +1,14 @@
 [
   {
+    "type": "Репорт",
+    "count": 4,
+    "user": "asd",
+    "color": "#ff4444",
+    "ts": 1774282427,
+    "sender": "PavelDIPF",
+    "reason": "sdsd"
+  },
+  {
     "type": "Вход",
     "action": "Вход",
     "user": "PavelDIPF",
