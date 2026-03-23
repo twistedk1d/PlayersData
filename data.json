@@ -1,5 +1,13 @@
 [
   {
+    "type": "report",
+    "time": "16:31:13",
+    "target": "TENSEY_0",
+    "count": 5,
+    "sender": "PavelDIPF",
+    "reason": "СЫН ХУЙНИ"
+  },
+  {
     "type": "log",
     "action": "Вход в игру",
     "user": "PavelDIPF",
